@@ -7,7 +7,7 @@ export default function Navbar(props) {
     <React.Fragment>
         <nav class="navbar navbar-dark bg-primary">
           <span class="navbar-brand mb-0 h2 font-serif">Soulbound Library 📚</span>
-          {props.address != null ? <span class="navbar-text mb-0 color-secondary text-white">Logged in as {props.address}</span> : <div></div>}
+          {props.address != null ? <span class="navbar-text mb-0 color-secondary text-white">Logged in as {props.address}</span> : <span class="navbar-text mb-0 color-secondary text-white">Not Connected</span> }
         </nav>
     </React.Fragment>
   )
