@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import getWeb3 from "./getWeb3";
+import soulboundLibrary from "../contracts/soulboundLibrary.json";
 
 class Web3Util extends Component {
-  state = { storageValue: 0, web3: null, accounts: null, contract: null };
+  state = { web3: null, accounts: null, contract: null, totalSupply:0, userTokens:[] };
 
   componentDidMount = async () => {
     try {
@@ -14,35 +15,55 @@ class Web3Util extends Component {
 
       // Get the contract instance.
       const networkId = await web3.eth.net.getId();
+      const deployedNetwork = soulboundLibrary.networks[networkId];
+
+      const instance = new web3.eth.Contract(
+        soulboundLibrary.abi,
+        deployedNetwork && deployedNetwork.address,
+      );
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
-      this.setState({ web3, accounts }, this.runExample);
+      this.setState({ web3, accounts, contract: instance }, this.getTotalSupply);
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
-        `Failed to load web3, accounts, or contract. Check console for details.`,
+        `Failed to load web3, accounts, or contract. Please make sure you use Metamask`,
       );
       console.error(error);
     }
   };
 
-  runExample = async () => {
+  getPastTransfers = async () => {
+    const {contract ,accounts} = this.state;
+    const events = await contract.getPastEvents("Transfer",{filter: {1: [accounts[0]]}})
+    let userTokens = [];
+    for(let i = 0; i < events.length; i++){
+      userTokens.push(events[i]["returnValues"]['2']);
+    }
+    this.setState({userTokens});
+  }
 
+  getTotalSupply = async () => {
+    const {contract } = this.state;
+    // Get the value from the contract to prove it worked.
+    const response = await contract.methods.totalSupply().call();
     // Update state with the result.
-    this.setState({ storageValue: 2 });
+    this.setState({ totalSupply: response });
+    
+    this.getPastTransfers();
   };
+
 
   render() {
     if (!this.state.web3) {
-      return <div>Loading Web3, accounts, and contract...</div>;
+      return <div>Could not connect to web3, please refresh your page and make sure Metamask is installed
+      </div>;
     }
     return (
-      <div className="Web3Util">
-        <h1>LETS FUCKING GO!</h1>
-        <p>WEB3 WORKS FUCKING AMAZING</p>
-        <p>Your address is</p>
-        {this.state.accounts}
-        
+      <div className="text-center">
+        <p>Connected, {this.state.accounts[0]}, you've minted {this.state.userTokens.length} books.</p>
+        <p>In Soulbound Library, Users can mint the books they've read and receive a NON-transerable Soulbound tokens associated with their accounts</p>
+        <p>Total Soulbound Books Minted: {this.state.totalSupply}</p>
       </div>
     );
   }

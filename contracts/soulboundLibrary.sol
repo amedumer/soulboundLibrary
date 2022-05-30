@@ -8,10 +8,7 @@ contract soulboundLibrary is ERC721A{
     mapping (uint => Book) books;
 
     struct Book{
-        string author;
-        string name;
         string isbn;
-
     }
 
     constructor(string memory name_, string memory symbol_) ERC721A(name_,symbol_) {
@@ -31,7 +28,7 @@ contract soulboundLibrary is ERC721A{
         require(msg.value == 1000000000000000, "Book mint cost is 0.001 eth.");
         //require(isbn_.length == 10, "ISBN length not valid.");
 
-        books[_nextTokenId()] = Book(author_,name_,isbn_);
+        books[_nextTokenId()] = Book(isbn_);
         _safeMint(msg.sender,1);
     }
 
@@ -45,7 +42,7 @@ contract soulboundLibrary is ERC721A{
         _safeMint(msg.sender,batchMintSize);
 
         for(uint i = 0; i < batchMintSize; i++){
-            books[tokenID] = Book(authors_[i],names_[i],isbns_[i]);
+            books[tokenID] = Book(isbns_[i]);
             tokenID++;
         }
     }
