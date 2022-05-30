@@ -17,14 +17,17 @@ import {
   currentRefinements,
 } from 'instantsearch.js/es/widgets';
 import TypesenseInstantSearchAdapter from 'typesense-instantsearch-adapter';
-import {SearchClient as TypesenseSearchClient} from 'typesense'; // To get the total number of docs
+import { SearchClient as TypesenseSearchClient } from 'typesense'; // To get the total number of docs
 import images from '../images/*.*';
 import STOP_WORDS from './utils/stop_words.json';
 
 // Source: https://stackoverflow.com/a/901144/123545
-const anchorParams = new Proxy(new URLSearchParams(window.location.hash.replace('#', '')), {
-  get: (anchorParams, prop) => anchorParams.get(prop),
-});
+const anchorParams = new Proxy(
+  new URLSearchParams(window.location.hash.replace('#', '')),
+  {
+    get: (anchorParams, prop) => anchorParams.get(prop),
+  }
+);
 
 let TYPESENSE_SERVER_CONFIG = {
   apiKey: process.env.TYPESENSE_SEARCH_ONLY_API_KEY, // Be sure to use an API key that only allows searches, in production
@@ -54,7 +57,9 @@ let TYPESENSE_SERVER_CONFIG = {
 
 if (process.env[`TYPESENSE_HOST_2`]) {
   TYPESENSE_SERVER_CONFIG.nodes.push({
-    host: anchorParams.host ? anchorParams.host : process.env[`TYPESENSE_HOST_2`],
+    host: anchorParams.host
+      ? anchorParams.host
+      : process.env[`TYPESENSE_HOST_2`],
     port: process.env.TYPESENSE_PORT,
     protocol: process.env.TYPESENSE_PROTOCOL,
   });
@@ -62,7 +67,9 @@ if (process.env[`TYPESENSE_HOST_2`]) {
 
 if (process.env[`TYPESENSE_HOST_3`]) {
   TYPESENSE_SERVER_CONFIG.nodes.push({
-    host: anchorParams.host ? anchorParams.host : process.env[`TYPESENSE_HOST_3`],
+    host: anchorParams.host
+      ? anchorParams.host
+      : process.env[`TYPESENSE_HOST_3`],
     port: process.env.TYPESENSE_PORT,
     protocol: process.env.TYPESENSE_PROTOCOL,
   });
@@ -70,7 +77,9 @@ if (process.env[`TYPESENSE_HOST_3`]) {
 
 if (process.env[`TYPESENSE_HOST_NEAREST`]) {
   TYPESENSE_SERVER_CONFIG['nearestNode'] = {
-    host: anchorParams.host ? anchorParams.host : process.env[`TYPESENSE_HOST_NEAREST`],
+    host: anchorParams.host
+      ? anchorParams.host
+      : process.env[`TYPESENSE_HOST_NEAREST`],
     port: process.env.TYPESENSE_PORT,
     protocol: process.env.TYPESENSE_PROTOCOL,
   };
@@ -85,7 +94,7 @@ async function getIndexSize() {
   let results = await typesenseSearchClient
     .collections(INDEX_NAME)
     .documents()
-    .search({q: '*'});
+    .search({ q: '*' });
 
   return results['found'];
 }
@@ -115,38 +124,38 @@ function topMarginForUrl(url) {
 }
 
 function urlsObjectsForBookObject(bookObject) {
-  let urls = []
+  let urls = [];
 
   if (bookObject['isbn_10']) {
-    urls.push(`https://www.amazon.com/dp/${bookObject['isbn_10']}`)
+    urls.push(`https://www.amazon.com/dp/${bookObject['isbn_10']}`);
   } else if (bookObject.isbn_13) {
-    urls.push(`https://www.amazon.com/s?k=${bookObject['isbn_13']}`)
+    urls.push(`https://www.amazon.com/s?k=${bookObject['isbn_13']}`);
   }
 
-  urls.push(`https://openlibrary.org${bookObject['id']}`)
+  urls.push(`https://openlibrary.org${bookObject['id']}`);
 
-  return urls.map(u => {
+  return urls.map((u) => {
     return {
       url: u,
       icon: iconForUrl(u),
-      topMargin: topMarginForUrl(u)
-    }
-  })
+      topMargin: topMarginForUrl(u),
+    };
+  });
 
-  return urls
+  return urls;
 }
 
 function queryWithoutStopWords(query) {
   const words = query.replace(/[&\/\\#,+()$~%.':*?<>{}]/g, '').split(' ');
   return words
-    .map(word => {
+    .map((word) => {
       if (STOP_WORDS.includes(word.toLowerCase())) {
         return null;
       } else {
         return word;
       }
     })
-    .filter(w => w)
+    .filter((w) => w)
     .join(' ')
     .trim();
 }
@@ -158,7 +167,7 @@ const typesenseInstantsearchAdapter = new TypesenseInstantSearchAdapter({
   //  queryBy is required.
   additionalSearchParameters: {
     queryBy: 'author,title',
-    useCache: true
+    useCache: true,
   },
 });
 const searchClient = typesenseInstantsearchAdapter.searchClient;
@@ -192,7 +201,7 @@ search.addWidgets([
     queryHook(query, search) {
       const modifiedQuery = queryWithoutStopWords(query);
       if (modifiedQuery.trim() !== '' && modifiedQuery.trim().length > 2) {
-        if(debounceTimerId) {
+        if (debounceTimerId) {
           clearTimeout(debounceTimerId);
         }
         debounceTimerId = setTimeout(() => search(modifiedQuery), 250);
@@ -214,7 +223,7 @@ search.addWidgets([
   stats({
     container: '#stats',
     templates: {
-      text: ({nbHits, hasNoResults, hasOneResult, processingTimeMS}) => {
+      text: ({ nbHits, hasNoResults, hasOneResult, processingTimeMS }) => {
         let statsText = '';
         if (hasNoResults) {
           statsText = 'No results';
@@ -255,8 +264,8 @@ search.addWidgets([
         `,
       empty: 'No books found for <q>{{ query }}</q>. Try another search term.',
     },
-    transformItems: items => {
-      return items.map(item => {
+    transformItems: (items) => {
+      return items.map((item) => {
         return {
           ...item,
           urls: urlsObjectsForBookObject(item),
@@ -280,7 +289,7 @@ search.addWidgets([
       count: 'badge badge-light bg-light-2 ml-2',
       label: 'd-flex align-items-center text-capitalize',
       checkbox: 'mr-2',
-    }
+    },
   }),
   refinementList({
     container: '#subjects-refinement-list',
@@ -298,13 +307,13 @@ search.addWidgets([
       count: 'badge badge-light bg-light-2 ml-2',
       label: 'd-flex align-items-center text-capitalize',
       checkbox: 'mr-2',
-    }
+    },
   }),
   sortBy({
     container: '#sort-by',
     items: [
-      {label: 'Recent first', value: `${INDEX_NAME}`},
-      {label: 'Oldest first', value: `${INDEX_NAME}/sort/publish_date:asc`},
+      { label: 'Recent first', value: `${INDEX_NAME}` },
+      { label: 'Oldest first', value: `${INDEX_NAME}/sort/publish_date:asc` },
     ],
     cssClasses: {
       select: 'custom-select custom-select-sm',
@@ -323,8 +332,8 @@ search.addWidgets([
       categoryLabel: 'text-capitalize',
       delete: 'btn btn-sm btn-link p-0 pl-2',
     },
-    transformItems: items => {
-      const modifiedItems = items.map(item => {
+    transformItems: (items) => {
+      const modifiedItems = items.map((item) => {
         return {
           ...item,
           label: '',
@@ -347,7 +356,7 @@ search.on('render', function () {
   $('#hits .clickable-search-term').on('click', handleSearchTermClick);
 
   // Read directions button
-  $('.readDirectionsButton').on('click', event => {
+  $('.readDirectionsButton').on('click', (event) => {
     $(event.currentTarget).parent().siblings().first().modal('show');
   });
 });
@@ -366,7 +375,7 @@ $(function () {
   $('.clickable-search-term').on('click', handleSearchTermClick);
 
   // Clear refinements, when searching
-  $searchBox.on('keydown', event => {
+  $searchBox.on('keydown', (event) => {
     search.helper.clearRefinements();
   });
 
