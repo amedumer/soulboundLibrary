@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "truffle": "^5.5.16",
+    "solc": "^0.8.9"
+  },
+  "name": "soulboundlibrary",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {
+    "mocha": "^9.2.2",
+    "erc721a": "^4.0.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
