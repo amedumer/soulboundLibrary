@@ -1,5 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import ProfileView from './profile';
 
-ReactDOM.render(<ProfileView />, document.getElementById('profileView'));
+const prf = ReactDOM.createRoot(document.getElementById('profileView'));
+prf.render(<ProfileView />);

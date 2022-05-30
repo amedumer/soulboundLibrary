@@ -28,12 +28,19 @@ class Web3Util extends Component {
         soulboundLibrary.abi,
         deployedNetwork && deployedNetwork.address
       );
+      console.log('inside web3 shit');
+
+      const userTokens = await this.getPastTransfers(instance, accounts);
+      const totalSupply = await this.getTotalSupply(instance);
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
-      this.setState(
-        { web3, accounts, contract: instance },
-        this.getTotalSupply
-      );
+      this.setState({
+        web3,
+        accounts,
+        contract: instance,
+        userTokens,
+        totalSupply,
+      });
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -43,26 +50,24 @@ class Web3Util extends Component {
     }
   };
 
-  getPastTransfers = async () => {
-    const { contract, accounts } = this.state;
+  getPastTransfers = async (contract, accounts) => {
     const events = await contract.getPastEvents('Transfer', {
       filter: { 1: [accounts[0]] },
+      fromBlock: 0,
+      toBlock: 'latest',
     });
     let userTokens = [];
     for (let i = 0; i < events.length; i++) {
       userTokens.push(events[i]['returnValues']['2']);
     }
-    this.setState({ userTokens });
+    return userTokens;
   };
 
-  getTotalSupply = async () => {
-    const { contract } = this.state;
+  getTotalSupply = async (contract) => {
     // Get the value from the contract to prove it worked.
     const response = await contract.methods.totalSupply().call();
     // Update state with the result.
-    this.setState({ totalSupply: response });
-
-    this.getPastTransfers();
+    return response;
   };
 
   render() {
