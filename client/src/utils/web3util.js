@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import getWeb3 from "./getWeb3";
 import soulboundLibrary from "../contracts/soulboundLibrary.json";
+import Navbar from "../components/Navbar/navbar";
 
 class Web3Util extends Component {
   state = { web3: null, accounts: null, contract: null, totalSupply:0, userTokens:[] };
@@ -60,11 +61,10 @@ class Web3Util extends Component {
       </div>;
     }
     return (
-      <div className="text-center">
-        <p>Connected, {this.state.accounts[0]}, you've minted {this.state.userTokens.length} books.</p>
-        <p>In Soulbound Library, Users can mint the books they've read and receive a NON-transerable Soulbound tokens associated with their accounts</p>
-        <p>Total Soulbound Books Minted: {this.state.totalSupply}</p>
-      </div>
+      <React.Fragment>
+        <Navbar address = {this.state.accounts[0]}></Navbar>
+
+      </React.Fragment>
     );
   }
 }

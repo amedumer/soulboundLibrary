@@ -40,30 +40,11 @@
 </head>
 
 <body>
-<div class="container">
-  <div class="row mt-3 ">
-    <div class="col-md">
-      <header>
-        <div class="row">
-          <div class="col-md">
-            <h1 class="text-md-center font-serif">
-              Soulbound Library 📚
-            </h1>
 
-            <div class="d-md-flex justify-content-md-center">
-
-            </div>
-          </div>
-        </div>
-      </header>
-    </div>
-  </div>
-</div>
-
-<div id="web3util" class="d-md-flex justify-content-md-center"></div>
+<div id="web3util" class="justify-content-md-center"></div>
 
 
-<div class="row mt-2 mt-md-3 no-gutters">
+<div class="row mt-0 mt-md-0 no-gutters">
   <div class="col-md">
     <div id="searchbox-container" class="bg-secondary pt-3 pt-md-5 pb-2 pb-md-4 px-3 px-md-5">
       <div class="row justify-content-md-center">
@@ -168,6 +149,9 @@
       </div>
       <div class="modal-body">
         <p>
+          In Soulbound Library, Users can mint the books they've read and receive a NON-transerable Soulbound tokens associated with their accounts
+        </p>
+        <p>
           This search experience is powered by <a href="https://typesense.org" target="_blank">Typesense</a> which is
           a blazing-fast, <a href="https://github.com/typesense/typesense" target="_blank">open source</a> typo-tolerant
           search-engine. It is an open source alternative to Algolia and an easier-to-use alternative to ElasticSearch.
@@ -199,7 +183,8 @@
   </div>
 </div>
 
-<script src="./src/web3wrapper.js"></script>
+<script src="./src/renderWrapper.js"></script>
+<
 <script src="./src/app.js"></script>
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 </body>
