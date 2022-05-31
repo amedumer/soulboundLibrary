@@ -28,7 +28,6 @@ class Web3Util extends Component {
         soulboundLibrary.abi,
         deployedNetwork && deployedNetwork.address
       );
-      console.log('inside web3 shit');
 
       const userTokens = await this.getPastTransfers(instance, accounts);
       const totalSupply = await this.getTotalSupply(instance);

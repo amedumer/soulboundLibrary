@@ -18,6 +18,7 @@ File.open(OUTPUT_FILE, 'w') do |output_file|
   gzip_reader.each_line.each_slice(BATCH_SIZE) do |lines|
     authors_records_batch = lines.map do |line|
       line_number += 1
+      puts "Now at #{line_number}"
       parsed_record = Oj.load(line.split("\t")[4])
       record_type = parsed_record['type']['key']
       record_key = parsed_record['key']

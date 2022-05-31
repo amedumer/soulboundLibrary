@@ -9,7 +9,6 @@ class ProfileView extends Web3Util {
 
   constructor(props) {
     super(props);
-    console.log('constructor called');
     this.state = {
       ...this.state,
       bookISBNs: [],
@@ -18,21 +17,23 @@ class ProfileView extends Web3Util {
     };
   }
   componentDidUpdate = async () => {
-    console.log('component did update');
+    //console.log('component did update');
     if (this.state.web3 === null) {
       alert('No web3 detected.');
       return;
     }
-    if (this.state.userTokens.length === 0) {
-      // no need to fetch data
-      console.log('User does not have any tokens.');
-      return;
-    }
     if (!this.state.loading) {
       //already fetched some data
-      console.log('Already fetched books');
+      //console.log('Already fetched books');
       return;
     }
+    if (this.state.userTokens.length === 0) {
+      // no need to fetch data
+      //console.log('User does not have any tokens.');
+      this.setState({ loading: false });
+      return;
+    }
+
     this.loadBooks();
   };
 

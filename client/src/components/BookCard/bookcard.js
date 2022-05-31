@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 
 export default function BookCard(props) {
   const book = props.book;
-  console.log(book);
   return (
     <div className="card w-25">
       <div className="card-body">
         <h5 className="card-title">{book.title}</h5>
         <p className="card-text">By George Orwell</p>
       </div>
-      <ul className="list-group list-group-flush">
+      <ul id="attr-list" className="list-group list-group-flush">
         <li id="pages" className="list-group-item">
           {book.number_of_pages} pages
         </li>
