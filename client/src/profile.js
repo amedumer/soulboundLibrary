@@ -1,3 +1,4 @@
+import { Button } from 'bootstrap';
 import React, { Component } from 'react';
 import BookCard from './components/BookCard/bookcard';
 import Navbar from './components/Navbar/navbar';
@@ -67,7 +68,32 @@ class ProfileView extends Web3Util {
     }
   };
 
+  burnBook = async (tID) => {
+    try {
+      console.log('burn');
+      console.log(tID);
+
+      const contract = this.state.contract;
+      const address = this.state.accounts[0];
+
+      console.log(address);
+
+      await contract.methods.burn(tID).send({ from: address });
+      console.log(this.state.books);
+
+      this.setState({
+        books: this.state.books.filter((book) => book.tokenID !== tID),
+      });
+      console.log(this.state.books);
+      alert('It was a pleasure to burn.');
+    } catch (err) {
+      alert('Burn failed.');
+      console.log(err);
+    }
+  };
+
   render() {
+    console.log('RENDER');
     return (
       <div>
         <Navbar address={this.state.accounts}></Navbar>
@@ -83,8 +109,8 @@ class ProfileView extends Web3Util {
                 </div>
 
                 <div className="stats">
-                  <h6 className="mb-0">Total Supply</h6>
-                  <span>{this.state.totalSupply}</span>
+                  <h6 className="mb-0">Books Burned</h6>
+                  <span>{this.state.userBurns.length}</span>
                 </div>
               </div>
             </div>
@@ -96,7 +122,9 @@ class ProfileView extends Web3Util {
         ) : (
           <div className="p-3 d-flex justify-content-around align-items-center">
             {this.state.books.map((bk) => {
-              return <BookCard book={bk}></BookCard>;
+              return (
+                <BookCard id={bk.id} book={bk} burn={this.burnBook}></BookCard>
+              );
             })}
           </div>
         )}

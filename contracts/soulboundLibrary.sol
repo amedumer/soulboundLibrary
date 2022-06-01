@@ -35,20 +35,12 @@ contract soulboundLibrary is ERC721A {
         _safeMint(msg.sender, 1);
     }
 
-    function batchMint(
-        string[] memory authors_,
-        string[] memory names_,
-        string[] memory isbns_,
-        uint256 batchMintSize
-    ) public payable {
+    function batchMint(string[] memory isbns_, uint256 batchMintSize)
+        public
+        payable
+    {
         require(batchMintSize > 1, "You can not batch mint a single book");
         require(batchMintSize <= 100, "Maximum batch mint count is 100");
-        require(
-            authors_.length == batchMintSize &&
-                names_.length == batchMintSize &&
-                isbns_.length == batchMintSize,
-            "Inconsistent data"
-        );
         require(
             msg.value == (500000000000000 * batchMintSize),
             "Batch mint cost is 0.0005 eth * batchMintSize"

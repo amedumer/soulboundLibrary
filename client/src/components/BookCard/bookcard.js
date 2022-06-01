@@ -25,11 +25,19 @@ export default function BookCard(props) {
           target="_blank"
           className="card-link"
         >
-          Get Details
+          <button id="detailsButton" type="button" className="btn btn-warning">
+            Get Details
+          </button>
         </a>
-        <a href="#" className="card-link">
+
+        <button
+          id="burnButton"
+          type="button"
+          className="btn btn-primary ml-4"
+          onClick={() => props.burn(book['tokenID'])}
+        >
           Burn
-        </a>
+        </button>
       </div>
     </div>
   );

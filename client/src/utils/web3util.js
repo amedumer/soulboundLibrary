@@ -10,6 +10,7 @@ class Web3Util extends Component {
     contract: null,
     totalSupply: 0,
     userTokens: [],
+    userBurns: [],
   };
 
   componentDidMount = async () => {
@@ -29,8 +30,12 @@ class Web3Util extends Component {
         deployedNetwork && deployedNetwork.address
       );
 
-      const userTokens = await this.getPastTransfers(instance, accounts);
+      const { userTokens, userBurns } = await this.getPastTransfers(
+        instance,
+        accounts
+      );
       const totalSupply = await this.getTotalSupply(instance);
+
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
       this.setState({
@@ -38,6 +43,7 @@ class Web3Util extends Component {
         accounts,
         contract: instance,
         userTokens,
+        userBurns,
         totalSupply,
       });
     } catch (error) {
@@ -51,15 +57,31 @@ class Web3Util extends Component {
 
   getPastTransfers = async (contract, accounts) => {
     const events = await contract.getPastEvents('Transfer', {
-      filter: { 1: [accounts[0]] },
+      filter: { to: [accounts[0]] },
       fromBlock: 0,
       toBlock: 'latest',
     });
+
+    const burns = await contract.getPastEvents('Transfer', {
+      filter: { from: accounts[0] },
+      fromBlock: 0,
+      toBlock: 'latest',
+    });
+
+    let userBurns = [];
+    for (let i = 0; i < burns.length; i++) {
+      if (!userBurns.includes(burns[i]['returnValues']['2'])) {
+        userBurns.push(burns[i]['returnValues']['2']);
+      }
+    }
+
     let userTokens = [];
     for (let i = 0; i < events.length; i++) {
-      userTokens.push(events[i]['returnValues']['2']);
+      if (!userBurns.includes(events[i]['returnValues']['2'])) {
+        userTokens.push(events[i]['returnValues']['2']);
+      }
     }
-    return userTokens;
+    return { userTokens, userBurns };
   };
 
   getTotalSupply = async (contract) => {

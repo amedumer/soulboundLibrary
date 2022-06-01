@@ -257,6 +257,9 @@ search.addWidgets([
               <a role="button" class="clickable-search-term">{{#helpers.highlight}}{ "attribute": "author" }{{/helpers.highlight}}</a>
             </div>
             <div class="mt-auto text-right">
+
+            <button id="mintButton" type="button" class="btn btn-primary" onClick="mint({{#helpers.highlight}}{ "attribute": "isbn_10" }{{/helpers.highlight}})" >Mint</button>
+
               {{#urls}}
               <a class="ml-2" href="{{ url }}" target="_blank" ><img class="mt-{{topMargin}}" src="{{ icon }}" alt="{{ type }}" height="14"></a>
               {{/urls}}
